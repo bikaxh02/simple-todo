@@ -1,9 +1,68 @@
 :root {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #20233a;
-  background: #f6f7fb;
+  color: var(--text-primary);
+  background: var(--bg-page);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  color-scheme: light;
+
+  --bg-page: #f6f7fb;
+  --bg-glow: #e6e9ff;
+  --card-bg: rgba(255, 255, 255, 0.92);
+  --card-border: #e8e9f1;
+  --card-shadow: rgba(40, 45, 80, 0.12);
+  --text-primary: #20233a;
+  --text-eyebrow: #7379a1;
+  --text-muted: #898da5;
+  --text-subtle: #a0a2b3;
+  --text-completed: #a7a9b7;
+  --accent: #5b61b1;
+  --accent-hover: #464c9d;
+  --accent-soft: #eeefff;
+  --accent-text: #5b61b1;
+  --input-bg: #f7f7fb;
+  --input-focus-bg: #ffffff;
+  --input-focus-border: #9ca2ee;
+  --divider: #eeeff4;
+  --todo-border: #f0f0f4;
+  --checkbox-bg: #ffffff;
+  --checkbox-border: #c8cbe2;
+  --checkbox-checked: #6d73c4;
+  --delete-color: #c6c8d3;
+  --danger-hover: #c25669;
+  --toggle-border: #e1e3f2;
+  --toggle-hover-bg: #e5e7ff;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #0f111a;
+  --bg-glow: #1e2240;
+  --card-bg: rgba(23, 26, 40, 0.92);
+  --card-border: #2a2f47;
+  --card-shadow: rgba(0, 0, 0, 0.45);
+  --text-primary: #eef0ff;
+  --text-eyebrow: #949bc7;
+  --text-muted: #989ec2;
+  --text-subtle: #6e7499;
+  --text-completed: #60668a;
+  --accent: #6c73d6;
+  --accent-hover: #7d84e4;
+  --accent-soft: #252945;
+  --accent-text: #b7bdff;
+  --input-bg: #1e2235;
+  --input-focus-bg: #23283e;
+  --input-focus-border: #6c73d6;
+  --divider: #262b42;
+  --todo-border: #22273c;
+  --checkbox-bg: #181b2b;
+  --checkbox-border: #43496b;
+  --checkbox-checked: #6c73d6;
+  --delete-color: #5a6082;
+  --danger-hover: #f07187;
+  --toggle-border: #323859;
+  --toggle-hover-bg: #2f3557;
 }
 
 * {
@@ -26,20 +85,22 @@ button {
 
 .app-shell {
   align-items: center;
-  background: radial-gradient(circle at top left, #e6e9ff 0, transparent 38%), #f6f7fb;
+  background: radial-gradient(circle at top left, var(--bg-glow) 0, transparent 38%), var(--bg-page);
   display: flex;
   justify-content: center;
   min-height: 100vh;
   padding: 32px 16px;
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
 .todo-card {
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid #e8e9f1;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 24px;
-  box-shadow: 0 24px 70px rgba(40, 45, 80, 0.12);
+  box-shadow: 0 24px 70px var(--card-shadow);
   max-width: 620px;
   overflow: hidden;
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   width: 100%;
 }
 
@@ -50,8 +111,14 @@ button {
   padding: 36px 36px 24px;
 }
 
+.header-actions {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
 .eyebrow {
-  color: #7379a1;
+  color: var(--text-eyebrow);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -67,12 +134,31 @@ h1 {
 }
 
 .task-count {
-  background: #eeefff;
+  background: var(--accent-soft);
   border-radius: 999px;
-  color: #5b61b1;
+  color: var(--accent-text);
   font-size: 0.8rem;
   font-weight: 700;
   padding: 9px 13px;
+}
+
+.theme-toggle {
+  align-items: center;
+  background: var(--accent-soft);
+  border: 1px solid var(--toggle-border);
+  border-radius: 999px;
+  color: var(--accent-text);
+  display: inline-flex;
+  font-size: 0.8rem;
+  font-weight: 700;
+  gap: 6px;
+  padding: 8px 13px;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.theme-toggle:hover {
+  background: var(--toggle-hover-bg);
+  transform: translateY(-1px);
 }
 
 .add-form {
@@ -82,24 +168,28 @@ h1 {
 }
 
 .add-form input {
-  background: #f7f7fb;
+  background: var(--input-bg);
   border: 1px solid transparent;
   border-radius: 12px;
-  color: #20233a;
+  color: var(--text-primary);
   min-width: 0;
   outline: none;
   padding: 14px 16px;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
   width: 100%;
 }
 
+.add-form input::placeholder {
+  color: var(--text-subtle);
+}
+
 .add-form input:focus {
-  background: #fff;
-  border-color: #9ca2ee;
+  background: var(--input-focus-bg);
+  border-color: var(--input-focus-border);
 }
 
 .add-form button {
-  background: #5b61b1;
+  background: var(--accent);
   border: 0;
   border-radius: 12px;
   color: white;
@@ -109,14 +199,14 @@ h1 {
 }
 
 .add-form button:hover {
-  background: #464c9d;
+  background: var(--accent-hover);
   transform: translateY(-1px);
 }
 
 .toolbar {
   align-items: center;
-  border-bottom: 1px solid #eeeff4;
-  border-top: 1px solid #eeeff4;
+  border-bottom: 1px solid var(--divider);
+  border-top: 1px solid var(--divider);
   display: flex;
   justify-content: space-between;
   padding: 12px 36px;
@@ -131,20 +221,20 @@ h1 {
 .clear-button {
   background: transparent;
   border: 0;
-  color: #898da5;
+  color: var(--text-muted);
   font-size: 0.8rem;
   padding: 7px 8px;
 }
 
 .filter.active {
-  background: #eeefff;
+  background: var(--accent-soft);
   border-radius: 8px;
-  color: #5b61b1;
+  color: var(--accent-text);
   font-weight: 700;
 }
 
 .clear-button:hover {
-  color: #c25669;
+  color: var(--danger-hover);
 }
 
 .todo-list {
@@ -156,7 +246,7 @@ h1 {
 
 .todo {
   align-items: center;
-  border-bottom: 1px solid #f0f0f4;
+  border-bottom: 1px solid var(--todo-border);
   display: flex;
   gap: 12px;
   padding: 16px 0;
@@ -172,14 +262,14 @@ h1 {
 }
 
 .todo.completed span {
-  color: #a7a9b7;
+  color: var(--text-completed);
   text-decoration: line-through;
 }
 
 .checkbox {
   align-items: center;
-  background: white;
-  border: 2px solid #c8cbe2;
+  background: var(--checkbox-bg);
+  border: 2px solid var(--checkbox-border);
   border-radius: 50%;
   color: white;
   display: inline-flex;
@@ -193,26 +283,26 @@ h1 {
 }
 
 .completed .checkbox {
-  background: #6d73c4;
-  border-color: #6d73c4;
+  background: var(--checkbox-checked);
+  border-color: var(--checkbox-checked);
 }
 
 .delete-button {
   background: transparent;
   border: 0;
-  color: #c6c8d3;
+  color: var(--delete-color);
   font-size: 1.4rem;
   line-height: 1;
   padding: 3px 0 3px 8px;
 }
 
 .delete-button:hover {
-  color: #c25669;
+  color: var(--danger-hover);
 }
 
 .empty-state {
   align-items: center;
-  color: #a0a2b3;
+  color: var(--text-subtle);
   display: flex;
   justify-content: center;
   min-height: 148px;
@@ -220,7 +310,7 @@ h1 {
 
 .todo-footer {
   align-items: center;
-  color: #a0a2b3;
+  color: var(--text-subtle);
   display: flex;
   font-size: 0.75rem;
   justify-content: space-between;
@@ -249,6 +339,11 @@ h1 {
   .todo-header {
     align-items: flex-start;
     gap: 16px;
+  }
+
+  .header-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .add-form {
