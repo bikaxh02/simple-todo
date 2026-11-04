@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 const STORAGE_KEY = "simple-todo-items";
+const THEME_STORAGE_KEY = "simple-todo-theme";
 const FILTERS = ["all", "active", "completed"];
 
 function readTodos() {
@@ -13,14 +14,43 @@ function readTodos() {
   }
 }
 
+function readTheme() {
+  try {
+    const saved = window.localStorage.getItem(THEME_STORAGE_KEY);
+    if (saved === "dark" || saved === "light") return saved;
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  } catch {
+    return "light";
+  }
+}
+
 function App() {
   const [todos, setTodos] = useState(readTodos);
+  const [theme, setTheme] = useState(readTheme);
   const [text, setText] = useState("");
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
   }, [todos]);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute(
+        "content",
+        theme === "dark" ? "#0f111a" : "#f6f7fb",
+      );
+    }
+  }, [theme]);
+
+  function toggleTheme() {
+    setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
+  }
 
   const remainingCount = todos.filter((todo) => !todo.completed).length;
   const visibleTodos = useMemo(() => {
@@ -57,6 +87,8 @@ function App() {
     setTodos((currentTodos) => currentTodos.filter((todo) => !todo.completed));
   }
 
+  const isDark = theme === "dark";
+
   return (
     <main className="app-shell">
       <section className="todo-card" aria-labelledby="page-title">
@@ -65,9 +97,22 @@ function App() {
             <p className="eyebrow">Daily focus</p>
             <h1 id="page-title">Simple todo</h1>
           </div>
-          <span className="task-count" aria-label={`${remainingCount} tasks left`}>
-            {remainingCount} left
-          </span>
+          <div className="header-actions">
+            <span className="task-count" aria-label={`${remainingCount} tasks left`}>
+              {remainingCount} left
+            </span>
+            <button
+              className="theme-toggle"
+              type="button"
+              onClick={toggleTheme}
+              aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+              aria-pressed={isDark}
+              title={isDark ? "Switch to light theme" : "Switch to dark theme"}
+            >
+              <span aria-hidden="true">{isDark ? "☀️" : "🌙"}</span>
+              <span className="theme-toggle-label">{isDark ? "Light" : "Dark"}</span>
+            </button>
+          </div>
         </header>
 
         <form className="add-form" onSubmit={addTodo}>
